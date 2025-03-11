@@ -17,7 +17,7 @@ export default function RootLayout({
       <body>
         <div className="relative min-h-screen">
           <div className="absolute inset-0 bg-main"></div>
-          <div className="absolute inset-0 bg-white opacity-[0.01]" />
+          <div className="absolute inset-0 bg-white opacity-[0.5]" />
           <div className="relative">
             <Navbar />
             {children}

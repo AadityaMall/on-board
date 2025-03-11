@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { LoginSignup } from "./LoginSignup";
 
 const Navbar: React.FC = () => {
   return (
@@ -8,13 +9,14 @@ const Navbar: React.FC = () => {
         <h1 className="font-bold text-[27px] text-brandColor">OnBoard</h1>
       </Link>
       <div>
-        <Link
+        <LoginSignup />
+        {/* <Link
           href={"/login"}
-          className="px-5 w-fit py-1 bg-white text-[16px] 
+          className="flex justify-center items-center w-[167px] h-[46px]  bg-white text-[16px] 
                 text-[#25304B] rounded-full drop-shadow-xl"
         >
           Login / Signup
-        </Link>
+        </Link> */}
       </div>
     </nav>
   );
