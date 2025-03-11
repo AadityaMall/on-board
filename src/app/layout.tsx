@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import "./globals.css";
-
-
-const poppins = Poppins({
-  weight: ["100","400", "700"], 
-  subsets: ["latin"], 
-  variable: "--font-poppins", 
-});
+import Navbar from "@/components/Main/Layout/Navbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,14 +12,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
-
   return (
     <html lang="en">
-      <body
-        className={`${poppins.variable}`}
-      >
-        {children}
+      <body>
+        <div className="relative min-h-screen">
+          <div className="absolute inset-0 bg-main"></div>
+          <div className="absolute inset-0 bg-white opacity-[0.01]" />
+          <div className="relative">
+            <Navbar />
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   );
