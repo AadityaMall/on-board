@@ -31,7 +31,7 @@ export function DatePicker({ setDay, setDate }: any) {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left text-brandColor font-semibold hover:text-brandColor",
+            "w-[100%] justify-start text-left text-brandColor font-semibold hover:text-brandColor",
             !date && "text-muted-foreground"
           )}
         >
@@ -45,6 +45,7 @@ export function DatePicker({ setDay, setDate }: any) {
           selected={date}
           onSelect={handleDateSelect} // Close popover on selection
           initialFocus
+          disabled={(date) => date < new Date()}
         />
       </PopoverContent>
     </Popover>

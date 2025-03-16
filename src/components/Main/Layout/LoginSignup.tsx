@@ -3,23 +3,35 @@ import { FormEvent, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { loginAction, registerAction } from "@/actions/AuthActions";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Lock, User } from "lucide-react";
+import { toast } from "react-toastify";
 
 export function LoginSignup() {
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [errors, setErrors] = useState<Record<any, any>>({});
 
-  async function handleSubmit(actionFn: any, formData: FormData, event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    actionFn: any,
+    formData: FormData,
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault(); // Prevent default form submission
-  
+
     const result = await actionFn(formData);
     if (result?.error) {
       console.log(result.error);
       setErrors(result.error); // Store validation errors in state
     } else {
       setErrors({});
-      console.log("Success!"); // Handle successful login/signup
+      toast.success("Success") // Handle successful login/signup
     }
   }
   return (
@@ -34,15 +46,25 @@ export function LoginSignup() {
       {isLoginForm ? (
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-brandColor font-semibold text-2xl">Login</DialogTitle>
+            <DialogTitle className="text-brandColor font-semibold text-2xl">
+              Login
+            </DialogTitle>
           </DialogHeader>
-          <form onSubmit={(event) => handleSubmit(loginAction, new FormData(event.currentTarget), event)}>
+          <form
+            onSubmit={(event) =>
+              handleSubmit(
+                loginAction,
+                new FormData(event.currentTarget),
+                event
+              )
+            }
+          >
             <InputField
               label="Email ID"
               type="email"
               id="userLoginEmail"
               name="userLoginEmail"
-              icon={<User size={20} className="form-icon"/>}
+              icon={<User size={20} className="form-icon" />}
               error={errors?.loginEmail?._errors?.[0]}
             />
             <InputField
@@ -50,7 +72,7 @@ export function LoginSignup() {
               type="password"
               id="userLoginPassword"
               name="userLoginPassword"
-              icon={<Lock size={20} className="form-icon"/>}
+              icon={<Lock size={20} className="form-icon" />}
               error={errors?.loginPassword?._errors?.[0]}
             />
             <DialogFooter>
@@ -59,7 +81,11 @@ export function LoginSignup() {
           </form>
           <p className="text-center text-sm mt-4 text-brandGray">
             Not a member yet?{" "}
-            <button type="button" onClick={() => setIsLoginForm(false)} className="font-bold hover:cursor-pointer">
+            <button
+              type="button"
+              onClick={() => setIsLoginForm(false)}
+              className="font-bold hover:cursor-pointer"
+            >
               Sign up Now.
             </button>
           </p>
@@ -67,15 +93,25 @@ export function LoginSignup() {
       ) : (
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-brandColor font-semibold text-2xl">Signup</DialogTitle>
+            <DialogTitle className="text-brandColor font-semibold text-2xl">
+              Signup
+            </DialogTitle>
           </DialogHeader>
-          <form onSubmit={(event) => handleSubmit(registerAction, new FormData(event.currentTarget), event)}>
+          <form
+            onSubmit={(event) =>
+              handleSubmit(
+                registerAction,
+                new FormData(event.currentTarget),
+                event
+              )
+            }
+          >
             <InputField
               label="Full Name"
               type="text"
               id="userRegisterName"
               name="userRegisterName"
-              icon={<User size={20} className="form-icon"/>}
+              icon={<User size={20} className="form-icon" />}
               error={errors?.name?._errors?.[0]}
             />
             <InputField
@@ -83,7 +119,7 @@ export function LoginSignup() {
               type="email"
               id="userRegisterEmail"
               name="userRegisterEmail"
-              icon={<User size={20} className="form-icon"/>}
+              icon={<User size={20} className="form-icon" />}
               error={errors?.email?._errors?.[0]}
             />
             <InputField
@@ -91,7 +127,7 @@ export function LoginSignup() {
               type="password"
               id="userRegisterPassword"
               name="userRegisterPassword"
-              icon={<Lock size={20} className="form-icon"/>}
+              icon={<Lock size={20} className="form-icon" />}
               error={errors?.password?._errors?.[0]}
             />
             <InputField
@@ -99,7 +135,7 @@ export function LoginSignup() {
               type="password"
               id="userRegisterPasswordConfirm"
               name="userRegisterPasswordConfirm"
-              icon={<Lock size={20} className="form-icon"/>}
+              icon={<Lock size={20} className="form-icon" />}
               error={errors?.confirmPassword?._errors?.[0]}
             />
             <DialogFooter>
@@ -108,7 +144,11 @@ export function LoginSignup() {
           </form>
           <p className="text-center text-sm mt-4 text-brandGray">
             Already a member?{" "}
-            <button type="button" onClick={() => setIsLoginForm(true)} className="font-bold hover:cursor-pointer">
+            <button
+              type="button"
+              onClick={() => setIsLoginForm(true)}
+              className="font-bold hover:cursor-pointer"
+            >
               Login.
             </button>
           </p>
@@ -119,7 +159,21 @@ export function LoginSignup() {
 }
 
 // Input Field Component
-function InputField({ label, type, id, name, icon, error }: { label: string; type: string; id: string; name: string; icon: React.ReactNode; error?: string }) {
+function InputField({
+  label,
+  type,
+  id,
+  name,
+  icon,
+  error,
+}: {
+  label: string;
+  type: string;
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  error?: string;
+}) {
   return (
     <div className="py-2">
       <label htmlFor={id} className="text-sm">
@@ -127,7 +181,13 @@ function InputField({ label, type, id, name, icon, error }: { label: string; typ
       </label>
       <div className="form-group">
         {icon}
-        <input id={id} name={name} type={type} placeholder={label} className="form-input" />
+        <input
+          id={id}
+          name={name}
+          type={type}
+          placeholder={label}
+          className="form-input"
+        />
       </div>
       {error && <span className="text-red-500 text-xs">{error}</span>}
     </div>
@@ -138,7 +198,11 @@ function InputField({ label, type, id, name, icon, error }: { label: string; typ
 function SubmitButton({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="bg-brandColor text-white px-8 rounded-full w-full md:w-[50%] my-2 cursor-pointer">
+    <Button
+      type="submit"
+      disabled={pending}
+      className="bg-brandColor text-white px-8 rounded-full w-full md:w-[50%] my-2 cursor-pointer"
+    >
       {pending ? "Submitting..." : children}
     </Button>
   );

@@ -77,6 +77,20 @@ const data = {
         },
       ],
     },
+    {
+      title: "Airports",
+      icon: Plane,
+      items: [
+        {
+          title: "View All Airports",
+          url: "/airports",
+        },
+        {
+          title: "Create Airport",
+          url: "/airports/create",
+        },
+      ],
+    },
   ],
 }
 

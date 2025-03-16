@@ -10,13 +10,6 @@ const Navbar: React.FC = () => {
       </Link>
       <div>
         <LoginSignup />
-        {/* <Link
-          href={"/login"}
-          className="flex justify-center items-center w-[167px] h-[46px]  bg-white text-[16px] 
-                text-[#25304B] rounded-full drop-shadow-xl"
-        >
-          Login / Signup
-        </Link> */}
       </div>
     </nav>
   );
