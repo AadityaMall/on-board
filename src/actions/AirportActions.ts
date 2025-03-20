@@ -21,17 +21,6 @@ export async function createAirportAction(formData: FormData) {
   return { success: true, data: responseData };
 }
 
-export async function fetchAirportByIdAction(id: Number) {
-  const response = await fetch(`http://localhost:8080/airport-service/api/airport/${id}`);
-  const responseData = await response.json();
-
-  if (!response.ok) {
-    throw new Error(responseData.message || "Failed to fetch airport");
-  }
-
-  return { success: true, data: responseData };
-}
-
 export async function fetchAirportsAction(setLoading: Function) {
   setLoading(true);
   const response = await fetch("http://localhost:8080/airport-service/api/airports");

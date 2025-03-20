@@ -63,16 +63,11 @@ const data = {
     },
     {
       title: "Flights",
-      url: "#",
       icon: Plane,
       items: [
         {
           title: "View All Flights",
-          url: "#",
-        },
-        {
-          title: "Create FLight",
-          url: "#",
+          url: "/flights",
         },
       ],
     },
