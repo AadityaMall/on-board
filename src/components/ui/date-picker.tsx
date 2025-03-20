@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover";
 
 export function DatePicker({ setDay, setDate }: any) {
-  const [date, setCalenderDate] = React.useState<Date>();
+  const [date, setCalenderDate] = React.useState<Date>(new Date());
   const [open, setOpen] = React.useState(false); // Track popover state
 
   const handleDateSelect = (selectedDate: Date | undefined) => {

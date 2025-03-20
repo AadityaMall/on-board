@@ -27,6 +27,16 @@ const data = {
   },
   navMain: [
     {
+      title: "Dashboard",
+      icon: User,
+      items: [
+        {
+          title: "View Dashboard",
+          url: "/dashboard",
+        },
+      ],
+    },
+    {
       title: "User",
       icon: User,
       isActive: true,
@@ -84,10 +94,6 @@ const data = {
         {
           title: "View All Airports",
           url: "/airports",
-        },
-        {
-          title: "Create Airport",
-          url: "/airports/create",
         },
       ],
     },

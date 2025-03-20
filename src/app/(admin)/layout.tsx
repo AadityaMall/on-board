@@ -27,7 +27,7 @@ export default function RootLayout({
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="w-full flex justify-center items-center h-full">{children}</div>
+          <div className="w-full flex justify-center items-start h-full">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>

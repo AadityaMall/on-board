@@ -1,13 +1,23 @@
 "use client";
 import { useState, useEffect } from "react";
 import { DatePicker } from "@/components/ui/date-picker";
-import { Autocomplete } from "@/components/ui/Autocomplete";
+import CustomAutocomplete from "@/components/ui/CustomAutocomplete";
 import {toast} from 'react-toastify';
-const Landing = () => {
 
-  const [airports, setAirports] = useState<
-    { value: string; label: string; id: number }[]
-  >([]);
+interface City {
+  id: number;
+  name: string;
+  city: string;
+  country: string;
+}
+
+
+const Landing = () => {
+  const [airports, setAirports] = useState([]);
+  const [date, setDate] = useState<String>("");
+  const [day, setDay] = useState<String>("");
+  const [sourceAirport, setSourceAirport] = useState<City | null>(null);
+  const [destinationAirport, setDestinationAirport] = useState<City | null>(null);
 
   useEffect(() => {
     fetch("http://localhost:8080/airport-service/api/airports")
@@ -19,25 +29,24 @@ const Landing = () => {
         return response.json();
       })
       .then((data) => {
-        const airportList = Array.isArray(data) ? data : data.data || [];
-
-        setAirports(
-          airportList.map((airport: any) => ({
-            value: airport.city, // Adjust based on actual API response
-            label: airport.airportName,
-            id: airport.id,
-          }))
-        );
+        setAirports(data.data);
+        toast.success(data.message);
       })
       .catch((error) => toast.error("Error fetching airports"));
   }, []);
 
-  const [date, setDate] = useState<String>("");
-  const [day, setDay] = useState<String>("");
-  const [sourceCity, setSourceCity] = useState<String>("");
-  const [sourceAirportId, setSourceAirportId] = useState<String>("");
-  const [destinationCity, setDestinationCity] = useState<String>("");
-  const [destinationAirportId, setDestinationAirportId] = useState<String>("");
+  useEffect(() => {
+    if(sourceAirport && destinationAirport){
+      console.log(sourceAirport);
+      if(sourceAirport.id === destinationAirport.id){
+        toast.error("Source and Destination can't be the same");
+        setDestinationAirport(null);
+      }
+      
+    }
+  }, [sourceAirport,destinationAirport])
+  
+
   return (
     <>
       <div className="flex flex-col  mt-[5vh]">
@@ -55,29 +64,29 @@ const Landing = () => {
                 <h1 className="text-brandGray font-semibold text-sm ml-1">
                   From
                 </h1>
-                <Autocomplete
-                  setDataId={setSourceAirportId}
-                  setDataLabel={setSourceCity}
-                  data={airports}
-                  label="Airports"
-                />
+                <CustomAutocomplete
+                value={sourceAirport}
+                setValue={setSourceAirport}
+                data={airports?airports:[]}
+                type="object"
+              />
                 <h1 className="text-brandGray font-semibold text-sm ml-1">
-                  {sourceCity}
+                  {sourceAirport?sourceAirport.city:""}
                 </h1>
               </div>
               <div className="border-2 border-[#E3F4FF] rounded-md flex flex-col gap-2 p-4">
                 <h1 className="text-brandGray font-semibold text-sm ml-1">
-                  From
+                  To
                 </h1>
-                <Autocomplete
-                  setDataId={setDestinationAirportId}
-                  setDataLabel={setDestinationCity}
-                  data={airports}
-                  label="Airports"
-                />
+                <CustomAutocomplete
+                value={destinationAirport}
+                setValue={setDestinationAirport}
+                data={airports?airports:[]}
+                type="object"
+              />
                 <h1 className="text-brandGray font-semibold text-sm ml-1">
-                  {destinationCity}
-                </h1>
+                  {destinationAirport?destinationAirport.city:""}
+                </h1> 
               </div>
               <div className="border-2 border-[#E3F4FF] rounded-md flex flex-col gap-2 p-4">
                 <h1 className="text-brandGray font-semibold text-sm">

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Lock, User } from "lucide-react";
 import { toast } from "react-toastify";
-
+import { InputField } from "@/components/ui/input";
 export function LoginSignup() {
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [errors, setErrors] = useState<Record<any, any>>({});
@@ -158,41 +158,7 @@ export function LoginSignup() {
   );
 }
 
-// Input Field Component
-function InputField({
-  label,
-  type,
-  id,
-  name,
-  icon,
-  error,
-}: {
-  label: string;
-  type: string;
-  id: string;
-  name: string;
-  icon: React.ReactNode;
-  error?: string;
-}) {
-  return (
-    <div className="py-2">
-      <label htmlFor={id} className="text-sm">
-        {label} <span className="text-red-500 text-[10px]">*</span>
-      </label>
-      <div className="form-group">
-        {icon}
-        <input
-          id={id}
-          name={name}
-          type={type}
-          placeholder={label}
-          className="form-input"
-        />
-      </div>
-      {error && <span className="text-red-500 text-xs">{error}</span>}
-    </div>
-  );
-}
+
 
 // Submit Button with Loading
 function SubmitButton({ children }: { children: React.ReactNode }) {

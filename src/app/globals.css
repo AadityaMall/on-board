@@ -17,7 +17,8 @@
     @apply w-full relative p-2
   }
   .form-input {
-    @apply md:text-[11px] px-8 w-full py-2 rounded-md bg-gray-200 text-black focus:outline-none
+    @apply md:text-[11px] px-8 w-full py-2 rounded-md bg-gray-200 text-black 
+    focus:outline-none focus:ring-2 focus:ring-brandColor
   }
   .form-icon {
     @apply absolute md:top-[13px] top-4 left-3 text-brandColor

@@ -17,5 +17,51 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
     />
   )
 }
+// Input Field Component
+function InputField({
+  label,
+  type,
+  id,
+  name,
+  icon,
+  error,
+  className,
+  ...rest // Capture all additional props
+}: {
+  label: string;
+  type: string;
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  error?: string;
+  className?: string;
+} & React.InputHTMLAttributes<HTMLInputElement>) { // Accepts all input props
+  return (
+    <div className="py-2">
+      <label htmlFor={id} className="text-sm">
+        {label} <span className="text-red-500 text-[10px]">*</span>
+      </label>
+      <div className="form-group"> {/* Ensuring flex layout */}
+        {icon} {/* Add margin for icon */}
+        <input
+          id={id}
+          name={name}
+          type={type}
+          placeholder={label}
+          className={cn(
+            "form-input",
+            "w-full",
+            "text-sm",
+            "font-medium",
+            "rounded-md",
+            className
+          )}
+          {...rest} // Pass down additional props
+        />
+      </div>
+      {error && <span className="text-red-500 text-xs">{error}</span>}
+    </div>
+  );
+}
 
-export { Input }
+export { Input, InputField }
