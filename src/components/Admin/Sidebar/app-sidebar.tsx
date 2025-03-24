@@ -1,30 +1,22 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import {
-  User,
-  CalendarCheck,
-  Plane,
-  Settings2,
-} from "lucide-react"
+import * as React from "react";
+import { User, CalendarCheck, Plane, Settings2 } from "lucide-react";
 
-import { NavMain } from "@/components/ui/nav-main"
-import { NavUser } from "@/components/ui/nav-user"
-import SidebarHeading from "@/components/Admin/Sidebar/SidebarHeading"
+import { NavMain } from "@/components/ui/nav-main";
+import { NavUser } from "@/components/ui/nav-user";
+import SidebarHeading from "@/components/Admin/Sidebar/SidebarHeading";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "react-toastify";
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -93,21 +85,22 @@ const data = {
       ],
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user , logout} = useAuth();
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarHeading/>
+        <SidebarHeading />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {user && <NavUser user={user ? user : { name: "", email: "" }} logout={()=>logout(toast)}/>}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

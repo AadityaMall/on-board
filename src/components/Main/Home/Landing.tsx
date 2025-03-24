@@ -2,7 +2,9 @@
 import { useState, useEffect } from "react";
 import { DatePicker } from "@/components/ui/date-picker";
 import CustomAutocomplete from "@/components/ui/CustomAutocomplete";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
+import { fetchAirportsAction } from "@/actions/AirportActions";
+import { useAuth } from "@/context/AuthContext";
 
 interface City {
   id: number;
@@ -11,53 +13,59 @@ interface City {
   country: string;
 }
 
-
 const Landing = () => {
+  const { user } = useAuth();
   const [airports, setAirports] = useState([]);
   const [date, setDate] = useState<String>("");
   const [day, setDay] = useState<String>("");
   const [sourceAirport, setSourceAirport] = useState<City | null>(null);
-  const [destinationAirport, setDestinationAirport] = useState<City | null>(null);
+  const [destinationAirport, setDestinationAirport] = useState<City | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const data = await fetchAirportsAction(setLoading);
+      setAirports(data.data);
+      toast.info(data.message);
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch("http://localhost:8080/airport-service/api/airports")
-      .then((response) => {
-        if (!response.ok) {
-          toast.error("Network response was not ok");
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAirports(data.data);
-        toast.success(data.message);
-      })
-      .catch((error) => toast.error("Error fetching airports"));
+    fetchData();
   }, []);
 
   useEffect(() => {
-    if(sourceAirport && destinationAirport){
+    if (sourceAirport && destinationAirport) {
       console.log(sourceAirport);
-      if(sourceAirport.id === destinationAirport.id){
+      if (sourceAirport.id === destinationAirport.id) {
         toast.error("Source and Destination can't be the same");
         setDestinationAirport(null);
       }
-      
     }
-  }, [sourceAirport,destinationAirport])
-  
+  }, [sourceAirport, destinationAirport]);
+
+  if (loading) {
+    return "Loading...";
+  }
 
   return (
     <>
       <div className="flex flex-col  mt-[5vh]">
         <h1 className="mx-5 my-8 font-semibold text-4xl">
-          Where would you like to get{" "}
-          <span className="text-brandColor font-bold">OnBoard</span> today?
+          Hey {user ? user.name.split(" ")[0] : "there"}, Where would you like
+          to get <span className="text-brandColor font-bold">OnBoard</span>{" "}
+          today?
         </h1>
         <div className="md:w-[80vw] w-[90vw] mx-5 bg-white rounded-lg">
           <div className="bg-brandColor text-white rounded-lg">
             <h1 className="text-center py-[5px] font-medium text-md">
-              Login/Signup to book flights
+              {user?"Book a flight":"Login/Signup to book flights"}
             </h1>
             <div className="grid md:grid-cols-3 grid-cols-1 gap-4 bg-white text-black p-5">
               <div className="border-2 border-[#E3F4FF] rounded-md flex flex-col gap-2 p-4">
@@ -65,13 +73,13 @@ const Landing = () => {
                   From
                 </h1>
                 <CustomAutocomplete
-                value={sourceAirport}
-                setValue={setSourceAirport}
-                data={airports?airports:[]}
-                type="object"
-              />
+                  value={sourceAirport}
+                  setValue={setSourceAirport}
+                  data={airports ? airports : []}
+                  type="object"
+                />
                 <h1 className="text-brandGray font-semibold text-sm ml-1">
-                  {sourceAirport?sourceAirport.city:""}
+                  {sourceAirport ? sourceAirport.city : ""}
                 </h1>
               </div>
               <div className="border-2 border-[#E3F4FF] rounded-md flex flex-col gap-2 p-4">
@@ -79,14 +87,14 @@ const Landing = () => {
                   To
                 </h1>
                 <CustomAutocomplete
-                value={destinationAirport}
-                setValue={setDestinationAirport}
-                data={airports?airports:[]}
-                type="object"
-              />
+                  value={destinationAirport}
+                  setValue={setDestinationAirport}
+                  data={airports ? airports : []}
+                  type="object"
+                />
                 <h1 className="text-brandGray font-semibold text-sm ml-1">
-                  {destinationAirport?destinationAirport.city:""}
-                </h1> 
+                  {destinationAirport ? destinationAirport.city : ""}
+                </h1>
               </div>
               <div className="border-2 border-[#E3F4FF] rounded-md flex flex-col gap-2 p-4">
                 <h1 className="text-brandGray font-semibold text-sm">

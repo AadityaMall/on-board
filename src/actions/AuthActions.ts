@@ -1,19 +1,45 @@
 import { loginSchema, registerSchema } from "@/lib/validation";
+import api from "./api"; // Axios instance
+import { useAuth } from "@/context/AuthContext";
 
-export async function loginAction(formData: FormData) {
+export async function loginAction(
+  formData: FormData,
+  login: (user: any, token: string) => void
+) {
   const data = {
-    loginEmail: formData.get("userLoginEmail"),
-    loginPassword: formData.get("userLoginPassword"),
+    email: formData.get("userLoginEmail"),
+    password: formData.get("userLoginPassword"),
   };
   const validated = loginSchema.safeParse(data);
   if (!validated.success) {
-    return { error: validated.error.format() }; // Return structured Zod errors
+    return { error: validated.error.format() };
   }
-  // Perform login logic...
-  return { success: true };
+  try {
+    const response = await api.post("/auth-service/api/login", data);
+
+    // Extract token from headers (Bearer token format)
+    const token = response.headers["authorization"]?.split(" ")[1] || null;
+    const user = {
+      id:response.data.data.id,
+      name: response.data.data.name,
+      email: response.data.data.email,
+      role: response.data.data.role,
+    };
+    if (token) {
+      login(user, token);
+    }
+    return { success: true, user };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.response?.data?.message || "Login failed",
+    };
+  }
 }
 
 export async function registerAction(formData: FormData) {
+  const { login } = useAuth(); // Access AuthContext
+
   const data = {
     name: formData.get("userRegisterName"),
     email: formData.get("userRegisterEmail"),
@@ -27,32 +53,26 @@ export async function registerAction(formData: FormData) {
   }
 
   try {
-    const userData: {
-      name: FormDataEntryValue | null;
-      email: FormDataEntryValue | null;
-      password: FormDataEntryValue | null;
-    } = {
-      name: data.name,
-      email: data.email,
-      password: data.password,
+    const response = await api.post("/auth-service/api/register", data);
+
+    // Extract token from headers (Bearer token format)
+    const token = response.headers["Authorization"]?.split(" ")[1] || null;
+    const user = {
+      id:response.data.data.id,
+      name: response.data.data.name,
+      email: response.data.data.email,
+      role: response.data.data.role,
     };
-    const response = await fetch("http://localhost:8080/auth-service/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
 
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.message || "Registration failed");
+    if (token) {
+      login(user, token); // Update global Auth state
     }
 
-    return { success: true, data: responseData };
-  } catch (error) {
-    console.error("Error registering user:", error);
-    throw error;
+    return { success: true, user, message: response.data.message };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.response?.data?.message || "Registration failed",
+    };
   }
 }

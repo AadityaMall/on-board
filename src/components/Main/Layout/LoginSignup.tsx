@@ -14,24 +14,26 @@ import {
 import { Lock, User } from "lucide-react";
 import { toast } from "react-toastify";
 import { InputField } from "@/components/ui/input";
+import { useAuth } from "@/context/AuthContext";
 export function LoginSignup() {
+  const {login} = useAuth();
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [errors, setErrors] = useState<Record<any, any>>({});
 
   async function handleSubmit(
     actionFn: any,
     formData: FormData,
-    event: FormEvent<HTMLFormElement>
+    event: FormEvent<HTMLFormElement>,
+    functionCall:any
   ) {
     event.preventDefault(); // Prevent default form submission
-
-    const result = await actionFn(formData);
+    const result = await actionFn(formData,functionCall);
     if (result?.error) {
-      console.log(result.error);
+      toast.error(result.error)
       setErrors(result.error); // Store validation errors in state
     } else {
       setErrors({});
-      toast.success("Success") // Handle successful login/signup
+      toast.success("Logged In Successfully") // Handle successful login/signup
     }
   }
   return (
@@ -55,7 +57,8 @@ export function LoginSignup() {
               handleSubmit(
                 loginAction,
                 new FormData(event.currentTarget),
-                event
+                event,
+                login
               )
             }
           >
@@ -102,7 +105,8 @@ export function LoginSignup() {
               handleSubmit(
                 registerAction,
                 new FormData(event.currentTarget),
-                event
+                event,
+                null
               )
             }
           >

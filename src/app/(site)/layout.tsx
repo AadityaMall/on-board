@@ -13,8 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+
         <div className="relative min-h-screen">
           <div className="absolute inset-0 bg-main"></div>
           <div className="absolute inset-0 bg-white opacity-[0.5]" />
@@ -23,7 +22,6 @@ export default function RootLayout({
             {children}
           </div>
         </div>
-      </body>
-    </html>
+
   );
 }

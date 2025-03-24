@@ -1,4 +1,5 @@
 import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "@/context/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
 export default function RootLayout({
   children,
@@ -8,8 +9,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
-        <ToastContainer />
+        <AuthProvider>
+          {children}
+          <ToastContainer position="bottom-right"/>
+        </AuthProvider>
       </body>
     </html>
   );
