@@ -1,7 +1,8 @@
 "use client";
 import { createContext, useState, useEffect, useContext } from "react";
-import { getUserByIdAction } from "@/actions/UserActions"; // Import API function
+import { getUserByIdAction } from "@/actions/UserActions";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 // Define types
 interface User {
@@ -16,26 +17,47 @@ interface AuthContextType {
   token: string | null;
   login: (userData: User, token: string) => void;
   logout: (toast?: any) => void;
-  isAuthenticated: () => Promise<void>; // Function to validate token
+  isAuthenticated: () => Promise<void>;
 }
 
+const decodeToken = (token: string) => {
+  try {
+    const base64Url = token.split(".")[1]; // Get payload
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonPayload); // Return decoded payload
+  } catch (error) {
+    console.error("Invalid token:", error);
+    return null;
+  }
+};
 // Create Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// AuthProvider Component
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
   const router = useRouter();
+
   // Load auth state from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
+
     if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
-      isAuthenticated(); // Check token validity on reload
     }
+
+    setLoading(false);
+    setInitialized(true); // ✅ Now we know localStorage has been loaded
   }, []);
 
   // Login function
@@ -52,36 +74,91 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    router.push("/")
+    router.push("/");
     if (toast) {
-      toast.success("Logged out successfully")
+      toast.success("Logged out successfully");
     }
   };
 
-  // Check if user is authenticated
-  const isAuthenticated = async () => {
-    if (!user || !token) return;
+  // Check token expiration
+  useEffect(() => {
+    if (!token) return;
 
+    const decoded = decodeToken(token);
+    if (decoded?.exp) {
+      const expiresInMs = decoded.exp * 1000 - Date.now();
+      if (expiresInMs > 0) {
+        const timeoutId = setTimeout(() => {
+          toast.error("Session Expired, Log in again");
+          logout();
+        }, expiresInMs);
+
+        return () => clearTimeout(timeoutId);
+      } else {
+        logout();
+      }
+    }
+  }, [token]);
+
+  // WebSocket connection
+  useEffect(() => {
+    if (!user) return;
+
+    const ws = new WebSocket("ws://localhost:8080/ws/user-updates");
+
+    ws.onopen = () => console.log("Connected to WebSocket");
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (!data.userId) return;
+
+        if (data.userDeleted && user?.id === data.userId) {
+          console.log("User deleted. Logging out...");
+          logout();
+          return;
+        }
+
+        if (user.id === data.userId) {
+          console.log("Updating user...");
+          const updatedUser = { ...user, ...data };
+          setUser(updatedUser);
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        }
+      } catch (error) {
+        console.error("WebSocket JSON parsing error:", error);
+      }
+    };
+    ws.onerror = (error) => console.error("WebSocket error:", error);
+    ws.onclose = () => console.log("WebSocket Disconnected");
+
+    return () => ws.close();
+  }, [user]);
+
+  // Authentication check
+  useEffect(() => {
+    if (!initialized || !user || !token) return;
+    isAuthenticated();
+  }, [initialized, user, token]);
+
+  const isAuthenticated = async () => {
+    if (!user || !token) {
+      logout();
+      return;
+    }
     try {
       const response = await getUserByIdAction(user.id);
       if (!response.success) throw new Error("Invalid token");
     } catch (error) {
-      console.error("Token expired or invalid. Logging out...");
+      toast.error("Token expired or invalid. Logging out...");
       logout();
     }
   };
 
-  // Check authentication every 5 minutes
-  useEffect(() => {
-    const interval = setInterval(() => {
-      isAuthenticated();
-    }, 5 * 60 * 1000); // 5 minutes
-    return () => clearInterval(interval);
-  })
-   // Cleanup on unmount
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated }}>
-      {children}
+    <AuthContext.Provider
+      value={{ user, token, login, logout, isAuthenticated }}
+    >
+      {!loading && children}
     </AuthContext.Provider>
   );
 }

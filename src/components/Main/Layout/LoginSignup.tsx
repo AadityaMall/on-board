@@ -106,7 +106,7 @@ export function LoginSignup() {
                 registerAction,
                 new FormData(event.currentTarget),
                 event,
-                null
+                login
               )
             }
           >

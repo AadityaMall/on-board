@@ -1,6 +1,5 @@
 import { loginSchema, registerSchema } from "@/lib/validation";
 import api from "./api"; // Axios instance
-import { useAuth } from "@/context/AuthContext";
 
 export async function loginAction(
   formData: FormData,
@@ -20,7 +19,7 @@ export async function loginAction(
     // Extract token from headers (Bearer token format)
     const token = response.headers["authorization"]?.split(" ")[1] || null;
     const user = {
-      id:response.data.data.id,
+      id: response.data.data.id,
       name: response.data.data.name,
       email: response.data.data.email,
       role: response.data.data.role,
@@ -37,9 +36,10 @@ export async function loginAction(
   }
 }
 
-export async function registerAction(formData: FormData) {
-  const { login } = useAuth(); // Access AuthContext
-
+export async function registerAction(
+  formData: FormData,
+  login: (user: any, token: string) => void
+) {
   const data = {
     name: formData.get("userRegisterName"),
     email: formData.get("userRegisterEmail"),
@@ -51,19 +51,20 @@ export async function registerAction(formData: FormData) {
   if (!validated.success) {
     return { error: validated.error.format() };
   }
-
+  console.log(data);
   try {
     const response = await api.post("/auth-service/api/register", data);
 
     // Extract token from headers (Bearer token format)
-    const token = response.headers["Authorization"]?.split(" ")[1] || null;
+    const token = response.headers["authorization"]?.split(" ")[1] || null;
+    console.log(token);
     const user = {
-      id:response.data.data.id,
+      id: response.data.data.id,
       name: response.data.data.name,
       email: response.data.data.email,
       role: response.data.data.role,
     };
-
+    console.log(user);
     if (token) {
       login(user, token); // Update global Auth state
     }

@@ -20,17 +20,15 @@ export default function AuthorizedRoute({ children, allowedRoles }: AuthorizedRo
       router.replace("/");
       return;
     }
-
     if (!allowedRoles.includes(user.role)) {
       toast.error("You do not have permission to access this page");
       router.replace("/");
       return;
     }
-
     setIsAllowed(true); // Allow rendering if the user has the correct role
   }, [user, router, allowedRoles]);
 
-  if (!isAllowed) return null; // Prevent rendering unauthorized content
+  if (!isAllowed) return "Only Admins can access this page, get lost"; // Prevent rendering unauthorized content
 
   return <>{children}</>;
 }

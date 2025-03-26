@@ -12,7 +12,6 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     if (user) {
       isAuthenticated(true);
-      console.log(user);
     }
   }, [user]);
   return (

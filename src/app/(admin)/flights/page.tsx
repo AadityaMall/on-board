@@ -20,8 +20,6 @@ interface Flight {
 const FlightPage = () => {
   const [rows, setRows] = useState<Flight[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const columns = [
     {
@@ -104,11 +102,6 @@ const FlightPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleEdit = (flight: Flight) => {
-    setSelectedFlight(flight);
-    setIsEditOpen(true);
-  };
 
   const handleDelete = async (id: number) => {
     try {
