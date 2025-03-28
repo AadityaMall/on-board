@@ -1,39 +1,37 @@
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
-interface Station {
-  name: string;
-  city: string;
-  id: number;
-  country: string;
+interface CustomAutocompleteProps<T> {
+  value: T | null;
+  setValue: any;
+  data: T[];
+  getOptionLabel: (option: T) => string; // Generic function to extract label
+  filterOption?: (option: T, inputValue: string) => boolean; // Optional custom filtering
+  placeholder?: string;
 }
 
-interface CustomAutocompleteProps {
-  value: string | Station | any;
-  setValue: (value: string | Station | any) => void;
-  data: string[] | Station[];
-  type: "string" | "object"; // Determines behavior
-}
-
-export default function CustomAutocomplete({ value, setValue, data, type }: CustomAutocompleteProps) {
+export default function CustomAutocomplete<T>({
+  value,
+  setValue,
+  data,
+  getOptionLabel,
+  filterOption,
+  placeholder = "Search...",
+}: CustomAutocompleteProps<T>) {
   return (
     <div className="mt-1">
       <Autocomplete
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
         options={data}
-        getOptionLabel={(option) => (type === "object" ? (option as Station).name : (option as string))}
-        filterOptions={(options, { inputValue }) => {
-          if (type === "object") {
-            return (options as Station[]).filter((option) =>
-              option.city.toLowerCase().includes(inputValue.toLowerCase())
-            );
-          } else {
-            return (options as string[]).filter((option) =>
-              option.toLowerCase().includes(inputValue.toLowerCase())
-            );
-          }
-        }}
+        getOptionLabel={getOptionLabel}
+        filterOptions={(options, { inputValue }) =>
+          options.filter((option) =>
+            filterOption
+              ? filterOption(option, inputValue)
+              : getOptionLabel(option).toLowerCase().includes(inputValue.toLowerCase())
+          )
+        }
         disablePortal
         className="!text-brandColor"
         sx={{
@@ -64,7 +62,7 @@ export default function CustomAutocomplete({ value, setValue, data, type }: Cust
           },
         }}
         renderInput={(params) => (
-          <TextField {...params} className="!flex !items-center !text-sm" placeholder="Search..." />
+          <TextField {...params} className="!flex !items-center !text-sm" placeholder={placeholder} />
         )}
       />
     </div>

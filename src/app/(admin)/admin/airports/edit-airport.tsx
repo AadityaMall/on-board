@@ -1,49 +1,39 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, FormEvent } from "react";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
-  DialogActions,
-  TextField,
-} from "@mui/material";
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { updateAirportAction } from "@/actions/AirportActions";
 import { toast } from "react-toastify";
 import { cities } from "@/data/cities";
 import CustomAutocomplete from "@/components/ui/CustomAutocomplete";
 import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/ui/input";
-import { LetterText } from "lucide-react";
+import { LetterText,Edit } from "lucide-react";
 interface EditDialogProps {
-  open: boolean;
-  onClose: () => void;
-  airport: { id: number; name: string; city: string } | null;
+  preselectedAirport: any;
   refetchData: () => void;
 }
 
 const EditDialog: React.FC<EditDialogProps> = ({
-  open,
-  onClose,
-  airport,
+  preselectedAirport,
   refetchData,
 }) => {
-  const [name, setName] = useState(airport?.name || "");
-  const [city, setCity] = useState(airport?.city || "");
+  const [name, setName] = useState(preselectedAirport?.name || "");
+  const [city, setCity] = useState(preselectedAirport?.city || "");
   const [loading, setLoading] = useState(false);
 
-  // Sync state when airport changes
-  useEffect(() => {
-    if (airport) {
-      setName(airport.name);
-      setCity(airport.city);
-    }
-  }, [airport]);
-
-  const handleUpdate = async () => {
+  const handleUpdate = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setLoading(true);
     try {
       const data = {
-        id: airport?.id, // Ensure airport exists
+        id: preselectedAirport?.id, // Ensure airport exists
         airportName: name,
         city: city,
         country: "IN",
@@ -52,7 +42,6 @@ const EditDialog: React.FC<EditDialogProps> = ({
       if (response.success) {
         toast.success("Airport updated successfully!");
         refetchData();
-        onClose();
       } else {
         toast.error(response.data.message);
       }
@@ -64,10 +53,19 @@ const EditDialog: React.FC<EditDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Edit Airport</DialogTitle>
-      <DialogContent>
-        <form className="space-y-4">
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>
+          <Edit />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-brandColor font-semibold text-2xl">
+            Edit User Role
+          </DialogTitle>
+        </DialogHeader>
+        <form className="space-y-4" onSubmit={handleUpdate}>
           {/* City Selection */}
           <div>
             <label className="block text-sm font-medium mb-2">
@@ -92,16 +90,13 @@ const EditDialog: React.FC<EditDialogProps> = ({
             placeholder="Enter airport name"
             className="w-full"
           />
+          <DialogFooter>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Updating..." : "Update Airport"}
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} variant={"destructive"}>
-          Cancel
-        </Button>
-        <Button onClick={handleUpdate} color="primary" disabled={loading}>
-          {loading ? "Updating..." : "Update"}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

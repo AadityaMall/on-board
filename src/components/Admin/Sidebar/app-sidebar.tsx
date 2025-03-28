@@ -21,74 +21,39 @@ const data = {
     {
       title: "Dashboard",
       icon: User,
-      items: [
-        {
-          title: "View Dashboard",
-          url: "/dashboard",
-        },
-      ],
+      url: "/admin",
     },
     {
       title: "User",
       icon: User,
       isActive: true,
-      items: [
-        {
-          title: "View All Users",
-          url: "/users",
-        },
-      ],
+      url: "/admin/users",
     },
     {
       title: "Schedules",
       icon: CalendarCheck,
-      items: [
-        {
-          title: "View All Schedules",
-          url: "#",
-        },
-        {
-          title: "Create Schedule",
-          url: "#",
-        },
-      ],
+      url: "/admin/schedules",
     },
     {
       title: "Flights",
       icon: Plane,
-      items: [
-        {
-          title: "View All Flights",
-          url: "/flights",
-        },
-      ],
+      url: "/flights",
     },
     {
       title: "Bookings",
       url: "#",
       icon: Settings2,
-      items: [
-        {
-          title: "View All Bookings",
-          url: "#",
-        },
-      ],
     },
     {
       title: "Airports",
       icon: Plane,
-      items: [
-        {
-          title: "View All Airports",
-          url: "/airports",
-        },
-      ],
+      url: "/admin/airports",
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user , logout} = useAuth();
+  const { user, logout } = useAuth();
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -98,7 +63,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        {user && <NavUser user={user ? user : { name: "", email: "" }} logout={()=>logout(toast)}/>}
+        {user && (
+          <NavUser
+            user={user ? user : { name: "", email: "" }}
+            logout={() => logout(toast)}
+          />
+        )}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

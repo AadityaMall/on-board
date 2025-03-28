@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     setLoading(false);
-    setInitialized(true); // ✅ Now we know localStorage has been loaded
+    setInitialized(true); 
   }, []);
 
   // Login function

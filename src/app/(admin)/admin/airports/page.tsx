@@ -22,8 +22,6 @@ interface Airport {
 const AirportPage = () => {
   const [rows, setRows] = useState<Airport[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedAirport, setSelectedAirport] = useState<Airport | null>(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -53,9 +51,10 @@ const AirportPage = () => {
       renderCell: (params: any) => {
         return (
           <div className="!flex !items-center gap-4">
-            <Button onClick={() => handleEdit(params.row)}>
-              <Edit />
-            </Button>
+            <EditDialog
+              preselectedAirport={params.row}
+              refetchData={fetchData}
+            />
             <Button
               variant="destructive"
               onClick={() => handleDelete(params.row.id)}
@@ -72,7 +71,6 @@ const AirportPage = () => {
     try {
       const data = await fetchAirportsAction(setLoading);
       setRows(data.data);
-
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -82,13 +80,7 @@ const AirportPage = () => {
 
   useEffect(() => {
     fetchData();
-    
   }, []);
-
-  const handleEdit = (airport: Airport) => {
-    setSelectedAirport(airport);
-    setIsEditOpen(true);
-  };
 
   const handleDelete = async (id: number) => {
     try {
@@ -157,18 +149,6 @@ const AirportPage = () => {
           />
         </div>
       </div>
-
-      <EditDialog
-        open={isEditOpen}
-        onClose={() => {
-          setSelectedAirport(null);
-          setIsEditOpen(false);
-        }}
-        airport={
-          selectedAirport ? selectedAirport : { id: 0, name: "", city: "" }
-        }
-        refetchData={fetchData}
-      />
     </>
   );
 };

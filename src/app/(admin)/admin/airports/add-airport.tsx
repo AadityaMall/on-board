@@ -54,7 +54,7 @@ const AirportForm : React.FC<AirportFormProps> = ({ closeDrawer,refetchData }) =
               value={city}
               setValue={setCity}
               data={cities}
-              type="string"
+              getOptionLabel={(option)=>option}
             />
           </div>
 

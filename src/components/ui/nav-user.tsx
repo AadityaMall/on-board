@@ -93,10 +93,10 @@ export function NavbarUser({
         {user.role === "Admin" && (
           <DropdownMenuItem className="p-0 focus:outline-none focus:ring-0 focus:border-none">
             <Link
-              href="/dashboard"
+              href="/admin"
               className="w-full py-2 bg-brandColor my-1 rounded-md text-white text-center"
             >
-              Dashboard
+              Admin Dashboard
             </Link>
           </DropdownMenuItem>
         )}
