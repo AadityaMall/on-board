@@ -95,9 +95,6 @@ const AirportPage = () => {
       } else {
         toast.error(response.message);
       }
-      if (response.warning) {
-        toast.warning(response.warning);
-      }
     } catch (error: any) {
       toast.error(error.message);
     }

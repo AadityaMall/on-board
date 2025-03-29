@@ -37,7 +37,7 @@ const data = {
     {
       title: "Flights",
       icon: Plane,
-      url: "/flights",
+      url: "/admin/flights",
     },
     {
       title: "Bookings",

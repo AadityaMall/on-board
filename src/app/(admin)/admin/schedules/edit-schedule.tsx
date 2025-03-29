@@ -16,6 +16,7 @@ import {  Edit } from "lucide-react";
 import { DateTimePicker24h } from "@/components/ui/date-picker";
 import { fetchAirportsAction } from "@/actions/AirportActions";
 import { fetchFlightAction } from "@/actions/FlightActions";
+import { updateScheduleAction } from "@/actions/ScheduleActions";
 interface EditDialogProps {
   preselectedSchedule: any;
   refetchData: () => void;
@@ -56,11 +57,11 @@ const EditDialog: React.FC<EditDialogProps> = ({
       const data = {
         id: preselectedSchedule?.id, // Ensure airport exists
         flightId: flight?.flightId,
-        sourceAirportId: sourceAirport?.id,
-        destinationAirportId: destinationAirport?.id,
+        sourceAirport: sourceAirport?.id,
+        destinationAirport: destinationAirport?.id,
         dateTime: dateTime,
       };
-      const response = await updateAirportAction(data);
+      const response = await updateScheduleAction(data);
       if (response.success) {
         toast.success("Airport updated successfully!");
         refetchData();

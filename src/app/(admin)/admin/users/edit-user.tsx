@@ -83,7 +83,7 @@ export default function EditUser({
               value={role}
               setValue={setRole}
               data={roles}
-              type="string"
+              getOptionLabel={(option)=> option}
             />
           </div>
           <DialogFooter>

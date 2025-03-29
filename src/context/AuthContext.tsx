@@ -128,7 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error("WebSocket JSON parsing error:", error);
       }
     };
-    ws.onerror = (error) => console.error("WebSocket error:", error);
+    ws.onerror = () => toast.error("WebSocket error");
     ws.onclose = () => console.log("WebSocket Disconnected");
 
     return () => ws.close();

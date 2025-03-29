@@ -45,7 +45,6 @@ export async function deleteAirportAction(id: number) {
       success: true,
       data: responseData,
       message: "Airport deleted successfully!",
-      warning: responseData.message || null, // Preserve warning messages
     };
   } catch (error: any) {
     return { success: false, error: error.response?.data?.message || "Error deleting airport" };

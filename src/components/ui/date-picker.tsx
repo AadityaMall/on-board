@@ -14,7 +14,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export function DatePicker({ setDay, setDate }: any) {
-  const [date, setCalenderDate] = React.useState<Date>(new Date());
+  const [date, setCalenderDate] = React.useState<Date>();
   const [open, setOpen] = React.useState(false); // Track popover state
 
 
@@ -57,7 +57,7 @@ export function DatePicker({ setDay, setDate }: any) {
           selected={date}
           onSelect={handleDateSelect} // Close popover on selection
           initialFocus
-          disabled={(date) => date < new Date()}
+          disabled={(date) => date.getDate() < new Date().getDate()}
         />
       </PopoverContent>
     </Popover>

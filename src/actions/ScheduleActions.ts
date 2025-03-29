@@ -34,6 +34,7 @@ export const deleteScheduleAction = async (id:string) => {
 //Update schedule
 export const updateScheduleAction = async (data:any) => {
   try {
+    console.log(data);
     const response = await api.put("/schedule-service/api/schedule", data);
     return response.data;
   } catch (error:any) {
