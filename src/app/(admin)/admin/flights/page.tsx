@@ -84,7 +84,7 @@ const FlightPage = () => {
       const data = await fetchFlightAction(setLoading);
       console.log(data.data);
 
-      const formattedRows = data.data.map((flight: any) => ({
+      const formattedRows = data.data?.map((flight: any) => ({
         id: flight.flightId, // Ensure ID is unique
         number: flight.flightNumber,
         company: flight.company,
@@ -116,9 +116,7 @@ const FlightPage = () => {
       } else {
         toast.error(response.message);
       }
-      if (response.warning) {
-        toast.warning(response.warning);
-      }
+
     } catch (error: any) {
       toast.error(error.message);
     }

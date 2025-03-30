@@ -1,5 +1,5 @@
 "use client"
-
+import Link from "next/link"
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "@/components/ui/sidebar"
@@ -16,11 +16,13 @@ export default function SidebarHeading({ className, ...props }: React.ComponentP
       )}
       {...props}
     >
-      {isCollapsed ? (
-        <span className="text-2xl py-1">OB</span>
-      ) : (
-        <span className="text-2xl py-1">OnBoard</span>
-      )}
+      <Link href="/">
+        {isCollapsed ? (
+          <span className="text-2xl py-1">OB</span>
+        ) : (
+          <span className="text-2xl py-1">OnBoard</span>
+        )}
+      </Link>
     </div>
   )
 }

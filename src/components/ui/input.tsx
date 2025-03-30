@@ -37,7 +37,7 @@ function InputField({
   className?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>) { // Accepts all input props
   return (
-    <div className="py-2">
+    <div className="py-2 w-full">
       <label htmlFor={id} className="text-sm">
         {label} <span className="text-red-500 text-[10px]">*</span>
       </label>

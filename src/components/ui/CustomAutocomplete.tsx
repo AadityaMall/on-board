@@ -13,25 +13,26 @@ interface CustomAutocompleteProps<T> {
 export default function CustomAutocomplete<T>({
   value,
   setValue,
-  data,
+  data = [],
   getOptionLabel,
   filterOption,
   placeholder = "Search...",
 }: CustomAutocompleteProps<T>) {
   return (
-    <div className="mt-1">
+    <div className="mt-1 w-full">
       <Autocomplete
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
         options={data}
         getOptionLabel={getOptionLabel}
         filterOptions={(options, { inputValue }) =>
-          options.filter((option) =>
+          options?.filter((option) =>
             filterOption
               ? filterOption(option, inputValue)
               : getOptionLabel(option).toLowerCase().includes(inputValue.toLowerCase())
           )
         }
+        fullWidth
         disablePortal
         className="!text-brandColor"
         sx={{

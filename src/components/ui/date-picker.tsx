@@ -55,9 +55,9 @@ export function DatePicker({ setDay, setDate }: any) {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={handleDateSelect} // Close popover on selection
+          onSelect={handleDateSelect}
           initialFocus
-          disabled={(date) => date.getDate() < new Date().getDate()}
+          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
         />
       </PopoverContent>
     </Popover>
@@ -119,7 +119,7 @@ export function DateTimePicker24h({
             selected={date || new Date()}
             onSelect={handleDateSelect}
             initialFocus
-            disabled={(date) => date < new Date()}
+            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
           />
           <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
             <ScrollArea className="w-64 sm:w-auto">

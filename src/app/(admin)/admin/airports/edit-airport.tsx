@@ -75,7 +75,7 @@ const EditDialog: React.FC<EditDialogProps> = ({
               value={city}
               setValue={setCity}
               data={cities}
-              type="string"
+              getOptionLabel={(option) => option.name}
             />
           </div>
 

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { fetchAuthServiceHealthStatus } from "@/actions/DashBoardActions";
 import { toast } from "react-toastify";
 import { CheckCircleIcon, CircleX } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 
 const AuthServiceHealth = () => {
   const [status, setStatus] = useState<string | null>(null);
@@ -13,6 +15,9 @@ const AuthServiceHealth = () => {
     } catch (error: any) {
       toast.error("Error fetching data:", error);
     }
+  };
+  const pingBanckend = async () => {
+    fetchData();
   };
   useEffect(() => {
     fetchData();
@@ -32,7 +37,8 @@ const AuthServiceHealth = () => {
           <CircleX className="text-red-500 !h-[50%] !w-[50%]"/>
         )}
         <h2 className="text-2xl my-2 font-bold text-center">Auth Service</h2>
-        <span className="text-xl font-semibold">{status ? status : "Couldn't Fetch"}</span>
+        <span className="text-xl font-semibold">{status ? status : "DOWN"}</span>
+        <Button variant="outline" className="mt-2 hover:font-semibold hover:text-brandColor" onClick={pingBanckend}>Check Status</Button>
       </div>
     </>
   );

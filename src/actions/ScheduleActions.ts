@@ -51,3 +51,17 @@ export const getScheduleById = async (id:string) => {
     throw new Error(error.response?.data?.message || "Error fetching schedule by id");
   }
 }
+
+//Get schedules by date range only
+export const getSchedulesByDateRange = async (startUtc: string, endUtc: string, setLoading?: any) => {
+  if (setLoading) setLoading(true);
+  try {
+    let url = `/schedule-service/api/schedules?start=${startUtc}&end=${endUtc}`;
+    const response = await api.get(url);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Error fetching schedules by date range");
+  } finally {
+    if (setLoading) setLoading(false);
+  }
+};

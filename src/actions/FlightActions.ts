@@ -38,7 +38,6 @@ export async function deleteFlightAction(id: number) {
       success: true,
       data: responseData,
       message: "Flight deleted successfully!",
-      warning: responseData.message || null, // Preserve warning messages
     };
   } catch (error: any) {
     return { success: false, error: error.response?.data?.message || "Error deleting flight" };
