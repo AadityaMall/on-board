@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { InputField } from "@/components/ui/input";
-import { LetterText, PlusCircle, Trash2 } from "lucide-react";
+import { LetterText, PlusCircle, Trash2,DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createFlightAction } from "@/actions/FlightActions";
 import { toast } from "react-toastify";
@@ -19,9 +19,9 @@ const FlightForm: React.FC<FlightFormProps> = ({
   const [flightNumber, setFlightNumber] = useState<number | "">("");
   const [company, setCompany] = useState<string>("");
   const [totalSeats, setTotalSeats] = useState<number | "">("");
-  const [seatTypes, setSeatTypes] = useState<{ type: string; count: number }[]>(
-    [{ type: "", count: 0 }]
-  );
+  const [seatTypes, setSeatTypes] = useState<
+    { type: string; count: number; price: number }[]
+  >([{ type: "", count: 0, price: 0 }]);
 
   // Handle Input Changes
   const handleSeatTypeChange = (
@@ -35,7 +35,7 @@ const FlightForm: React.FC<FlightFormProps> = ({
   };
 
   const addSeatType = () => {
-    setSeatTypes([...seatTypes, { type: "", count: 0 }]);
+    setSeatTypes([...seatTypes, { type: "", count: 0, price: 0 }]);
   };
 
   const removeSeatType = (index: number) => {
@@ -63,6 +63,7 @@ const FlightForm: React.FC<FlightFormProps> = ({
       seatType: seatTypes.map((seat) => ({
         type: seat.type.toUpperCase(),
         count: seat.count,
+        price: seat.price,
       })),
     };
 
@@ -158,7 +159,25 @@ const FlightForm: React.FC<FlightFormProps> = ({
                     icon={<LetterText size={20} className="form-icon" />}
                   />
                 </div>
-
+                <div className="flex-1">
+                  <InputField
+                    label="Price"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    id={`seatPrice-${index}`}
+                    name={`seatPrice-${index}`}
+                    value={seat.price}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      handleSeatTypeChange(
+                        index,
+                        "price",
+                        Number(e.target.value)
+                      )
+                    }
+                    icon={<DollarSign size={20} className="form-icon" />}
+                  />
+                </div>
                 {index > 0 && (
                   <Button
                     variant="destructive"

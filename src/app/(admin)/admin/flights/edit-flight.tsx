@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/ui/input";
-import { LetterText, PlusCircle, Trash2, Edit } from "lucide-react";
+import { LetterText, PlusCircle, Trash2, Edit , DollarSign} from "lucide-react";
 import { toast } from "react-toastify";
 import { updateFlightAction } from "@/actions/FlightActions";
 
@@ -43,7 +43,7 @@ export default function FlightDialog({
   };
 
   const addSeatType = () => {
-    setSeatTypes([...seatTypes, { type: "", count: 0 }]);
+    setSeatTypes([...seatTypes, { type: "", count: 0, price: 0 }]);
   };
 
   const removeSeatType = (index: number) => {
@@ -65,6 +65,7 @@ export default function FlightDialog({
       seatType: seatTypes.map((seat: any) => ({
         type: seat.type.toUpperCase(),
         count: seat.count,
+        price: seat.price,
       })),
     };
     console.log(flightData);
@@ -161,6 +162,25 @@ export default function FlightDialog({
                       )
                     }
                     icon={<LetterText size={20} className="form-icon" />}
+                  />
+                </div>
+                <div className="flex-1">
+                  <InputField
+                    label="Price"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    id={`seatPrice-${index}`}
+                    name={`seatPrice-${index}`}
+                    value={seat.price}
+                    onChange={(e) =>
+                      handleSeatTypeChange(
+                        index,
+                        "price",
+                        Number(e.target.value)
+                      )
+                    }
+                    icon={<DollarSign size={20} className="form-icon" />}
                   />
                 </div>
                 {index > 0 && (
