@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import Script from "next/script";
 import { useAuth } from "@/context/AuthContext";
 import {
+  createBooking,
   generateRazorpayOrderId,
   verifyPayment,
 } from "@/actions/BookingActions";
@@ -134,18 +135,13 @@ export default function ScheduleBookingPage() {
     }
     const bookingData = {
       scheduleId: scheduleId as string,
-      userId: user.id, // You'll need to get this from your auth system
-      bookedSeats: selectedSeats,
-      totalAmount: totalPrice,
+      userId: user.id,
+      seatNumbers: selectedSeats,
+      amount: totalPrice,
     };
 
-    const paymentRequest = {
-      amount: totalPrice,
-      userId: user.id,
-      currency: "INR",
-    };
     try {
-      const data = await generateRazorpayOrderId(paymentRequest);
+      const data = await generateRazorpayOrderId(bookingData);
       if (!data) {
         toast.error("Failed to create payment order. Please try again.");
         return;
@@ -162,19 +158,21 @@ export default function ScheduleBookingPage() {
           const verfification = await verifyPayment(response);
 
           if (verfification.success) {
-            const paymentData = {
+            const finalBookingData = {
               ...bookingData,
               razorpayPaymentId: response.razorpay_payment_id,
               razorpayOrderId: response.razorpay_order_id,
             };
-            toast.success("Booking confirmed! Check console for details.");
-            console.log("Payment Successful:", paymentData);
+            console.log("Payment", finalBookingData);
+            const data = await createBooking(finalBookingData);
+            toast.success(data.message);
           }
         },
         prefill: {
           name: user.name,
           email: user.email,
         },
+        theme: { color: "#000099" },
       };
       const razorpay = new window.Razorpay(options);
       razorpay.open();

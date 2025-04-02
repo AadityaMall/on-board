@@ -103,7 +103,26 @@ const SeatSelection = ({
       if (data.count !== undefined) {
         setActiveUsers(data.count);
       }
-
+      // Handle booked seats message
+      if (data.type === "BOOKED_SEATS" && data.seats) {
+        setSeatsData((prevSeats) =>
+          prevSeats.map((seat) => {
+            if (data.seats.includes(seat.seatNumber)) {
+              return { ...seat, status: SeatStatus.BOOKED };
+            }
+            return seat;
+          })
+        );
+        
+        // Remove any booked seats from the selected seats
+        setSelectedSeats((prev) => 
+          prev.filter((seatNum) => !data.seats.includes(seatNum))
+        );
+        
+        if (selectedSeats.some((seatNum) => data.seats.includes(seatNum))) {
+          toast.info("Some of your selected seats were just booked by someone else.");
+        }
+      }
       // Handle seat blocked message
       if (data.type === "BLOCKED_SEATS" && data.seats) {
         setSeatsData((prevSeats) =>
