@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {fetchFlightServiceHealthStatus } from "@/actions/DashBoardActions";
+import {fetchBookingServiceHealthStatus } from "@/actions/DashBoardActions";
 import { toast } from "react-toastify";
 import { CheckCircleIcon, CircleX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,8 @@ const AirportServiceHealth = () => {
   const [status, setStatus] = useState<string | null>(null);
   const fetchData = async () => {
     try {
-      const data = await fetchFlightServiceHealthStatus();
-      toast.info("Flight Service :" + data.status);
+      const data = await fetchBookingServiceHealthStatus();
+      toast.info("Booking Service :" + data.status);
       setStatus(data.status);
     } catch (error: any) {
       toast.error("Error fetching data:", error);
@@ -37,7 +37,7 @@ const AirportServiceHealth = () => {
         ) : (
           <CircleX className="text-red-500 !h-[50%] !w-[50%]"/>
         )}
-        <h2 className="text-2xl my-2 font-bold text-center">Flight Service</h2>
+        <h2 className="text-2xl my-2 font-bold text-center">Booking Service</h2>
         <span className="text-xl font-semibold">{status ? status : "DOWN"}</span>
         <Button variant="outline" className="mt-2 hover:font-semibold hover:text-brandColor" onClick={pingBanckend}>Check Status</Button>
       </div>

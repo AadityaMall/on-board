@@ -4,6 +4,14 @@ import FlightServiceHealth from "@/components/Admin/Dashboard/FlightServiceHealt
 import AuthServiceHealth from "@/components/Admin/Dashboard/AuthServiceHealth";
 import AirportServiceHealth from "@/components/Admin/Dashboard/AirportServiceHealth";
 import UserServiceHealth from "@/components/Admin/Dashboard/UserServiceHealth";
+import BookingServiceHealth from "@/components/Admin/Dashboard/BookingServiceHealth";
+import PaymentServiceHealth from "@/components/Admin/Dashboard/PaymentServiceHealth";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "OnBoard: Admin Dashboard",
+  description: "Admin Dashboard",
+};
 
 const dashboard = () => {
   return (
@@ -17,6 +25,8 @@ const dashboard = () => {
             <AuthServiceHealth />
             <AirportServiceHealth />
             <UserServiceHealth />
+            <BookingServiceHealth />
+            <PaymentServiceHealth />
           </div>
         </div>
       </div>

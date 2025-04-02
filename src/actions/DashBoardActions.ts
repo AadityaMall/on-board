@@ -45,3 +45,21 @@ export const fetchAuthServiceHealthStatus = async () => {
         throw new Error(error.response?.data?.message || "Error fetching auth service status");
     }
 }
+//Fetch Payment Service Status
+export const fetchPaymentServiceHealthStatus = async () => {
+    try {
+        const response = await api.get("/payment-service/actuator/health");
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || "Error fetching payment service status");
+    }
+}
+//Fetch Booking Service Status
+export const fetchBookingServiceHealthStatus = async () => {
+    try {
+        const response = await api.get("/booking-service/actuator/health");
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || "Error fetching booking service status");
+    }
+}

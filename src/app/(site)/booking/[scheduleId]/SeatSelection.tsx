@@ -14,9 +14,9 @@ interface SeatTypeInfo {
   endSeatNumber: number;
 }
 enum SeatStatus {
-  VACANT,
-  PENDING,
-  BOOKED,
+  VACANT="VACANT",
+  PENDING="PENDING",
+  BOOKED="BOOKED",
 }
 interface SeatSelectionProps {
   scheduleId: string;
@@ -35,31 +35,11 @@ const SeatSelection = ({
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
   const [activeUsers, setActiveUsers] = useState<number>(0);
   const wsRef = useRef<WebSocket | null>(null);
-
+  const [isConnecting, setIsConnecting] = useState<boolean>(true);
   // Update parent component when selection changes
   useEffect(() => {
     onSelectionChange(selectedSeats);
   }, [selectedSeats, onSelectionChange]);
-
-  // Handle seat updates from WebSocket
-  const handleSeatUpdate = (data: any) => {
-    if (!data.seatNumber || !data.status) return;
-
-    setSeatsData((prevSeats) =>
-      prevSeats.map((seat) =>
-        seat.seatNumber === data.seatNumber
-          ? { ...seat, status: data.status as SeatStatus }
-          : seat
-      )
-    );
-  };
-
-  // Handle user count updates
-  const handleUserCount = (data: any) => {
-    if (data.count !== undefined) {
-      setActiveUsers(data.count);
-    }
-  };
 
   // Toggle seat selection
   const toggleSeatSelection = async (seat: Seat) => {
@@ -106,12 +86,15 @@ const SeatSelection = ({
     );
   };
 
-
   useEffect(() => {
+    setIsConnecting(true);
     const ws = new WebSocket(`ws://localhost:8080/ws/seats/${scheduleId}`);
     wsRef.current = ws;
 
-    ws.onopen = () => console.log("Connected to Schedule WebSocket");
+    ws.onopen = () => {
+      console.log("Connected to Schedule WebSocket");
+      setIsConnecting(false);
+    };
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -124,22 +107,21 @@ const SeatSelection = ({
       // Handle seat blocked message
       if (data.type === "BLOCKED_SEATS" && data.seats) {
         setSeatsData((prevSeats) =>
-          prevSeats.map((seat) =>
-            data.seats.includes(seat.seatNumber)
-              ? { ...seat, status: SeatStatus.PENDING }
-              : seat
-          )
-        );
-      }
-
-      // Handle seat released message
-      if (data.type === "UNBLOCKED_SEATS" && data.seats) {
-        setSeatsData((prevSeats) =>
-          prevSeats.map((seat) =>
-            data.seats.includes(seat.seatNumber)
-              ? { ...seat, status: SeatStatus.VACANT }
-              : seat
-          )
+          prevSeats.map((seat) => {
+            // If seat is in the blocked seats array, mark it as PENDING
+            if (data.seats.includes(seat.seatNumber)) {
+              return { ...seat, status: SeatStatus.PENDING };
+            }
+            // If seat was previously PENDING but is no longer in blocked seats, mark it as VACANT
+            else if (
+              seat.status === SeatStatus.PENDING &&
+              !selectedSeats.includes(seat.seatNumber)
+            ) {
+              return { ...seat, status: SeatStatus.VACANT };
+            }
+            // Otherwise keep the seat as is
+            return seat;
+          })
         );
       }
     };
@@ -147,7 +129,16 @@ const SeatSelection = ({
     ws.onclose = () => {};
     return () => ws.close();
   }, [scheduleId]);
-
+  if (isConnecting) {
+    return (
+      <div className="w-full max-w-screen-lg mx-auto bg-white p-6 rounded-lg shadow-md border-2 flex flex-col items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mb-4"></div>
+        <p className="text-lg text-gray-600">
+          Connecting to seat reservation system...
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="w-full max-w-screen-lg mx-auto bg-white p-6 rounded-lg shadow-md border-2">
       {/* Header Section */}
@@ -215,9 +206,7 @@ const SeatSelection = ({
                       seat.seatNumber <= seatType.endSeatNumber
                   )
                   .map((seat) => {
-                    const isSelected = selectedSeats.includes(
-                      seat.seatNumber
-                    );
+                    const isSelected = selectedSeats.includes(seat.seatNumber);
 
                     return (
                       <button
@@ -280,11 +269,11 @@ function getSeatStatusClass(status: SeatStatus, isSelected: boolean): string {
 
   switch (status) {
     case SeatStatus.VACANT:
-      return "bg-green-200 hover:bg-green-300";
+      return "bg-gray-200";
     case SeatStatus.PENDING:
-      return "bg-orange-200 cursor-not-allowed";
+      return "bg-orange-200";
     case SeatStatus.BOOKED:
-      return "bg-red-200 cursor-not-allowed opacity-70";
+      return "bg-red-200 opacity-70";
     default:
       return "bg-gray-200";
   }

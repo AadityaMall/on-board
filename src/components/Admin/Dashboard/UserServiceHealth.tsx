@@ -9,6 +9,7 @@ const AirportServiceHealth = () => {
   const fetchData = async () => {
     try {
       const data = await fetchUserServiceHealthStatus();
+      toast.info("User Service :" + data.status);
       setStatus(data.status);
     } catch (error: any) {
       toast.error("Error fetching data:", error);
@@ -32,11 +33,19 @@ const AirportServiceHealth = () => {
         {status === "UP" ? (
           <CheckCircleIcon className="text-green-900 !h-[50%] !w-[50%]" />
         ) : (
-          <CircleX className="text-red-500 !h-[50%] !w-[50%]"/>
+          <CircleX className="text-red-500 !h-[50%] !w-[50%]" />
         )}
         <h2 className="text-2xl my-2 font-bold text-center">User Service</h2>
-        <span className="text-xl font-semibold">{status ? status : "DOWN"}</span>
-        <Button variant="outline" className="mt-2 hover:font-semibold hover:text-brandColor" onClick={pingBanckend}>Check Status</Button>
+        <span className="text-xl font-semibold">
+          {status ? status : "DOWN"}
+        </span>
+        <Button
+          variant="outline"
+          className="mt-2 hover:font-semibold hover:text-brandColor"
+          onClick={pingBanckend}
+        >
+          Check Status
+        </Button>
       </div>
     </>
   );
