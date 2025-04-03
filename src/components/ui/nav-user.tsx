@@ -90,6 +90,14 @@ export function NavbarUser({
         align="end"
         sideOffset={4}
       >
+        <DropdownMenuItem className="p-0 focus:outline-none focus:ring-0 focus:border-none">
+          <Link
+            href="/account"
+            className="w-full py-2 bg-gray-300 my-0 rounded-md text-black text-center"
+          >
+            Profile
+          </Link>
+        </DropdownMenuItem>
         {user.role === "Admin" && (
           <DropdownMenuItem className="p-0 focus:outline-none focus:ring-0 focus:border-none">
             <Link

@@ -21,7 +21,7 @@ export async function getAllUsers(setLoading:any){
 
 export async function updateUserRoleAction(formData:any) {
   try {
-    const response = await api.put(`/user-service/api/user`, formData);
+    const response = await api.put(`/user-service/api/user-role`, formData);
     return { success: true, message: response.data.message };
   } catch (error: any) {
     return { success: false, message: error.response?.data?.message || "Failed to update user role" };
@@ -34,5 +34,14 @@ export async function deleteUserAction(id: number) {
     return { success: true, message: response.data.message };
   } catch (error: any) {
     return { success: false, message: error.response?.data?.message || "Failed to delete user" };
+  }
+}
+
+export async function updateUserAction(formData: any) {
+  try {
+    const response = await api.put(`/user-service/api/user`, formData);
+    return { success: true, message: response.data.message };
+  } catch (error: any) {
+    return { success: false, message: error.response?.data?.message || "Failed to update user" };
   }
 }

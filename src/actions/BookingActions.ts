@@ -25,3 +25,31 @@ export const createBooking = async (bookingRequestObject: any) => {
         throw new Error(error.response?.data?.message || "Error creating booking");
     }
 }
+
+export const getBookingByUserId = async (userId: number) => {
+    try {
+        const response = await api.get(`/booking-service/api/bookings/user/${userId}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || "Error fetching bookings");
+    }
+}
+
+export const getAllBookings = async (setLoading:any) => {
+    setLoading(true);
+    try {
+        const response = await api.get("/booking-service/api/bookings");
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || "Error fetching all bookings");
+    }
+}
+
+export const deletBookingById = async (bookingId: number) => {
+    try {
+        const response = await api.delete(`/booking-service/api/booking/${bookingId}`);
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || "Error deleting booking");
+    }
+}

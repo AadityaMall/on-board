@@ -41,7 +41,7 @@ const data = {
     },
     {
       title: "Bookings",
-      url: "#",
+      url: "/admin/bookings",
       icon: Settings2,
     },
     {
