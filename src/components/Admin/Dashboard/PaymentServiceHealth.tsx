@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {fetchFlightServiceHealthStatus } from "@/actions/DashBoardActions";
+import {fetchPaymentServiceHealthStatus } from "@/actions/DashBoardActions";
 import { toast } from "react-toastify";
 import { CheckCircleIcon, CircleX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ const AirportServiceHealth = () => {
   const [status, setStatus] = useState<string | null>(null);
   const fetchData = async () => {
     try {
-      const data = await fetchFlightServiceHealthStatus();
+      const data = await fetchPaymentServiceHealthStatus();
       toast.info("Payment Service :" + data.status);
       setStatus(data.status);
     } catch (error: any) {

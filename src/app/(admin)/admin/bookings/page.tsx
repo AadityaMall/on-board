@@ -95,7 +95,7 @@ const BookingsPage = () => {
 //   const handleDelete = async (id: number) => {
 //     try {
 //       // Show confirmation dialog
-//       if (!confirm("Are you sure you want to delete this airport?")) {
+//       if (!confirm("Are you sure you want to delete this booking?")) {
 //         return;
 //       }
 //       const response = await deleteBookingAction(id);

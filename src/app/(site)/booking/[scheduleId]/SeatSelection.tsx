@@ -195,8 +195,12 @@ const SeatSelection = ({
             <span>Selected by You</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-red-200 rounded-full"></div>
-            <span>Unavailable</span>
+            <div className="w-6 h-6 bg-red-400 rounded-full"></div>
+            <span>Booked</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-orange-500 rounded-full"></div>
+            <span>Blocked</span>
           </div>
         </div>
       </div>
@@ -290,9 +294,9 @@ function getSeatStatusClass(status: SeatStatus, isSelected: boolean): string {
     case SeatStatus.VACANT:
       return "bg-gray-200";
     case SeatStatus.PENDING:
-      return "bg-orange-200";
+      return "bg-orange-500";
     case SeatStatus.BOOKED:
-      return "bg-red-200 opacity-70";
+      return "bg-red-400 opacity-70 cursor-not-allowed";
     default:
       return "bg-gray-200";
   }
