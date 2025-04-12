@@ -239,8 +239,8 @@ export default function ScheduleBookingPage() {
                   <p className="text-sm text-gray-500">Available</p>
                   <p className="font-semibold text-green-600">
                     {schedule.flightResponse
-                      ? schedule.flightResponse.totalSeats -
-                        schedule.flightResponse.bookedSeats
+                      ? (Number(schedule.flightResponse.totalSeats) || 0) -
+                        (Number(schedule.flightResponse.bookedSeats) || 0)
                       : "N/A"}
                   </p>
                 </div>
